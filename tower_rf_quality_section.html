@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antenna RF Quality Report</title>
+ 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8f0fe;
+            margin: 0;
+            padding: 0;
+        }
+
+        .edit-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        h1, h2, h3, h4 {
+            color: #1a73e8;
+        }
+
+        h2 {
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 5px;
+        }
+
+        .form-group,
+        .form-section,
+        .form-antenna {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button.take-photo-button {
+            width: 100%;
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button.take-photo-button:hover {
+            background-color: #0c47a1;
+        }
+
+                 .photo-section img {
+            max-width: 300px;
+            margin-top: 20px;
+             margin-top: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    object-fit: contain; /* Ensure the image fits nicely within its bounds */
+        }
+
+        button.button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button.button:hover {
+            background-color: #0c47a1;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <div class="edit-container" id="form-container">
+        <!-- logo -->
+        <img src="data:image/jpeg;base64,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" alt="Company Logo" class="logo">
+        
+        <h3>Antenna RF Quality Report</h3>
+        <form id="editContainerForm">
+            <!-- Form Fields -->
+           
+          
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option value="active">New Installation</option>
+                    <option value="inactive">Upgrade Installation</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+
+            <!-- Site Info Section -->
+            <h3>Site Info</h3>
+
+            <div class="form-section">
+                <label for="siteName">Site Name:</label>
+                <input type="text" id="siteName" name="siteName" required>
+            </div>
+            <div class="form-section">
+                <label for="siteID">Site ID:</label>
+                <input type="text" id="siteID" name="siteID" required>
+            </div>
+            <div class="form-section">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="form-section">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-section">
+                <label for="surname">Surname:</label>
+                <input type="text" id="surname" name="surname" required>
+            </div>
+
+            <!-- Tower RF Quality Section -->
+       
+<div class="form-section">
+      <label for="labeling">
+          <h3>Labeling Complete</h3>
+      </label>
+      <p style="font-size: 11px;">
+          <label for="labeling">RET'S, Trunk fibres, Trunk DC, Hybrid fibres, Antennas, Earth Tails, MHA's, Routers</label>
+      </p>
+      <select id="labeling" name="labeling">
+          <option value="" disabled selected>Choose an option</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="na">Not Applicable</option>
+      </select>
+      <textarea placeholder="Comments" name="commentslabeling"></textarea>
+</div>
+        
+
+  <div class="form-section">
+      <label for="cablemanage">
+          <h3>Cable Management</h3>
+      </label>
+      <p style="font-size: 11px;">
+          <label for="cablemanage">Fibre, Feeder, Earthing</label>
+      </p>
+      <select id="cablemanage" name="cablemanage">
+          <option value="" disabled selected>Choose an option</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="na">Not Applicable</option>
+      </select>
+      <textarea placeholder="Comments" name="commentscablemanage"></textarea>
+  </div>
+
+ 
+
+  <div class="form-section">
+      <label for="yellowcap">
+          <h3>Yellow Caps</h3>
+      </label>
+      <p style="font-size: 11px;">
+          <label for="yellowcap">On Rods, Hose Clamp Ends</label>
+      </p>
+      <select id="yellowcap" name="yellowcap">
+          <option value="" disabled selected>Choose an option</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="na">Not Applicable</option>
+      </select>
+      <textarea placeholder="Comments" name="commentsyellowcap"></textarea>
+  </div>
+
+  <div class="form-section">
+      <label for="waterproof">
+          <h3>Water Proofing</h3>
+      </label>
+      <p style="font-size: 11px;">
+          <label for="waterproof">Feeders, Fibres</label>
+      </p>
+      <select id="waterproof" name="waterproof">
+          <option value="" disabled selected>Choose an option</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="na">Not Applicable</option>
+      </select>
+      <textarea placeholder="Comments" name="commentswaterproof"></textarea>
+  </div>
+
+             <!-- Photo Capture Section -->
+            <h3>Antenna RF Quality Report</h3>
+            <!-- Sector A Images -->
+            <div class="photo-section">
+            
+                <div style="background-color: lightgrey; padding: 20px;">
+                    <p>Sector A Labeling Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_antenna_a').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_antenna_a" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_antenna_a')">
+                    <img id="preview_antenna_a" alt="Preview">
+                </div>
+                <div <div style=" padding: 20px;">
+                    <p>Sector B Labeling Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_antenna_b').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_antenna_b" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_antenna_b')">
+                    <img id="preview_antenna_b" alt="Preview">
+                </div>
+               <div style="background-color: lightgrey; padding: 20px;">
+                    <p>Sector C Labeling Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_antenna_c').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_antenna_c" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_antenna_c')">
+                    <img id="preview_antenna_c" alt="Preview">
+                </div>
+            </div>
+             <!-- Water Proofing -->
+            <div class="photo-section">
+              
+                <div <div style=" padding: 20px;">
+                    <p>Sector A Water Proofing Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_5g_antenna_a').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_5g_antenna_a" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_5g_antenna_a')">
+                    <img id="preview_5g_antenna_a" alt="Preview">
+                </div>
+               <div style="background-color: lightgrey; padding: 20px;">
+                    <p>Sector B Water Proofing Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_5g_antenna_b').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_5g_antenna_b" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_5g_antenna_b')">
+                    <img id="preview_5g_antenna_b" alt="Preview">
+                </div>
+                <div <div style=" padding: 20px;">
+                    <p>Sector C Water Proofing Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_5g_antenna_c').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_5g_antenna_c" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_5g_antenna_c')">
+                    <img id="preview_5g_antenna_c" alt="Preview">
+                </div>
+            </div>
+
+             <!-- Cable Management -->
+            <div class="photo-section">
+              
+               <div style="background-color: lightgrey; padding: 20px;">
+                    <p>Sector A Cabe Management Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_cablemanage_a').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_cablemanage_a" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_cablemanage_a')">
+                    <img id="preview_cablemanage_a" alt="Preview">
+                </div>
+                <div style=" padding: 20px;">
+                    <p>Sector B Cabe Management Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_cablemanage_b').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_cablemanage_b" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_cablemanage_b')">
+                    <img id="preview_cablemanage_b" alt="Preview">
+                </div>
+                <div style="background-color: lightgrey; padding: 20px;">
+                    <p>Sector C Cabe Management Image</p>
+                    <button class="take-photo-button" onclick="document.getElementById('fileInput_cablemanage_c').click()" type="button">Upload Images</button>
+                    <input type="file" id="fileInput_cablemanage_c" accept="image/*" style="display:none" onchange="previewImage(this, 'preview_cablemanage_c')">
+                    <img id="preview_cablemanage_c" alt="Preview">
+                </div>
+            </div>
+
+
+
+
+           <button type="button" onclick="generatePDF()" class="button">Save Changes</button>
+
+        </form>
+
+          <!-- copyright -->
+    <div class="footer">
+        &copy; Straal Technologies
+    </div>
+    </div>
+
+  
+
+    <script>
+        function generatePDF() {
+    const formContainer = document.getElementById('form-container');
+    const saveButton = document.querySelector('button[onclick="generatePDF()"]');
+    const takePhotoButtons = document.querySelectorAll('.take-photo-button');
+    const siteID = document.getElementById('siteID').value || 'No_SiteID';
+
+    // Hide elements that should not appear in the PDF
+    saveButton.style.display = 'none';
+    takePhotoButtons.forEach(button => button.style.display = 'none');
+    document.querySelector('.footer').style.display = 'none';
+
+    // Dynamically adjust the textarea height to fit its content
+const textareas = document.querySelectorAll('textarea');
+textareas.forEach(textarea => {
+    // Dynamically adjust the height based on scroll height
+    textarea.style.height = 'auto'; // Reset height to calculate true scroll height
+    textarea.style.height = `${textarea.scrollHeight}px`; // Set height to fit all content
+
+    // Create a temporary div to replace textarea in PDF
+    const tempDiv = document.createElement('div');
+    tempDiv.style.whiteSpace = 'pre-wrap'; // Preserve whitespace and line breaks
+    tempDiv.style.wordWrap = 'break-word'; // Ensure text wraps correctly
+    tempDiv.innerHTML = textarea.value.replace(/\n/g, '<br>'); // Replace newlines with <br>
+
+    // Replace textarea with the div for the PDF view
+    textarea.parentNode.insertBefore(tempDiv, textarea);
+    textarea.style.display = 'none'; // Hide the textarea
+});
+
+
+
+    // Calculate exact content height in inches (based on 96 DPI)
+    const contentHeight = formContainer.offsetHeight / 96;
+
+    html2pdf()
+        .from(formContainer)
+        .set({
+            margin: [0, 0, -1, 0], // Top, Left, Bottom, Right margins in inches
+            
+             filename: `${siteID}_Tower_RF_Quality_Report.pdf`,
+            image: { type: 'jpeg', quality: 0.95 },
+            html2canvas: { scale: 4, dpi: 300, letterRendering: true },
+            jsPDF: { unit: 'in', format: [8.5, contentHeight], orientation: 'portrait' } // Use exact content height
+        })
+        .save()
+        .finally(() => {
+            // Show the "Save Changes" and "Take Photo" buttons again after generating the PDF
+            saveButton.style.display = 'block';
+            takePhotoButtons.forEach(button => button.style.display = 'block');
+
+        });
+}
+
+
+
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(previewId).src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+
+</html>
