@@ -278,7 +278,7 @@
         .from(formContainer)
         .set({
             margin: [0, 0, -1, 0], // Top, Left, Bottom, Right margins in inches
-            filename: `${siteID}_EOD_Report.pdf`,
+            filename: `${siteID}_EOD_Update.pdf`,
             image: { type: 'jpeg', quality: 0.95 },
             html2canvas: { scale: 4, dpi: 300, letterRendering: true },
             jsPDF: { unit: 'in', format: [8.5, contentHeight], orientation: 'portrait' } // Use exact content height
